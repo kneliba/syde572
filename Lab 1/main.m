@@ -74,9 +74,9 @@ plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 %% Part 3: Classifiers
 grid_count = 1000;
 epsilon = 0.01;
-x = linspace(min([min(cluster_A(:, 1)), min(cluster_B(:, 1))]), max([max(cluster_A(:, 1)), max(cluster_B(:, 1))]), grid_count);
-y = linspace(min([min(cluster_A(:, 2)), max(cluster_B(:, 2))]), max([max(cluster_A(:, 2)), max(cluster_B(:, 2))]), grid_count);
-[X, Y] = meshgrid(x, y);
+x_1 = linspace(min([min(cluster_A(:, 1)), min(cluster_B(:, 1))]), max([max(cluster_A(:, 1)), max(cluster_B(:, 1))]), grid_count);
+y_1 = linspace(min([min(cluster_A(:, 2)), max(cluster_B(:, 2))]), max([max(cluster_A(:, 2)), max(cluster_B(:, 2))]), grid_count);
+[X, Y] = meshgrid(x_1, y_1);
 
 % Case 1 MED, GED & MAP
 figure(3)
@@ -94,6 +94,9 @@ med_line_x = []; med_line_y = [];
 ged_line_x = []; ged_line_y = [];
 map_line_x = []; map_line_y = [];
 
+med1_grid = java.util.Hashtable;
+ged1_grid = java.util.Hashtable;
+map1_grid = java.util.Hashtable;
 for i = 1:grid_count
     for j = 1:grid_count
         point = [X(i, j), Y(i, j)];
@@ -105,6 +108,12 @@ for i = 1:grid_count
             med_line_x = [med_line_x point(1)];
             med_line_y = [med_line_y point(2)];
         end
+        if d_a < d_b
+            med1_grid.put(num2str([i,j]), "a");
+        else
+            med1_grid.put(num2str([i,j]), "b");
+        end
+
 
         % GED
         d_a = sqrt((point - u_a) * inv(cov_a) * (point - u_a).');
@@ -113,11 +122,20 @@ for i = 1:grid_count
             ged_line_x = [ged_line_x point(1)];
             ged_line_y = [ged_line_y point(2)];
         end
-
+        if d_a < d_b
+            ged1_grid.put(num2str([i,j]), "a");
+        else
+            ged1_grid.put(num2str([i,j]), "b");
+        end
         % MAP
         if abs(d_b^2 - d_a^2 - 2*log(n_b/n_a) - log(det(cov_a) / det(cov_b))) < epsilon
             map_line_x = [map_line_x point(1)];
             map_line_y = [map_line_y point(2)];
+        end
+        if d_b^2 - d_a^2 > 2*log(n_b/n_a) + log(det(cov_a) / det(cov_b))
+            map1_grid.put(num2str([i,j]), "a");
+        else
+            map1_grid.put(num2str([i,j]), "b");
         end
     end
 end
@@ -142,6 +160,8 @@ plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
 nn_line_x = []; nn_line_y = [];
 knn_line_x = []; knn_line_y = [];
 
+nn1_grid = java.util.Hashtable;
+knn1_grid = java.util.Hashtable;
 for i = 1:grid_count
     for j = 1:grid_count
         point = [X(i, j), Y(i, j)];
@@ -153,11 +173,21 @@ for i = 1:grid_count
             nn_line_x = [nn_line_x point(1)];
             nn_line_y = [nn_line_y point(2)];
         end
+        if min(d_A) < min(d_B)
+            nn1_grid.put(num2str([i,j]), "a");
+        else
+            nn1_grid.put(num2str([i,j]), "b");
+        end
 
         % 5NN
         if abs(mean(mink(d_A, 5)) - mean(mink(d_B, 5))) < epsilon
             knn_line_x = [knn_line_x point(1)];
             knn_line_y = [knn_line_y point(2)];
+        end
+        if mean(mink(d_A, 5)) <  mean(mink(d_B, 5))
+            knn1_grid.put(num2str([i,j]), "a");
+        else
+            knn1_grid.put(num2str([i,j]), "b");
         end
     end
 end
@@ -165,13 +195,11 @@ end
 plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
 plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
 
-
-
-x = linspace(min([min(cluster_C(:, 1)), min(cluster_D(:, 1)), min(cluster_E(:, 1))]), max([max(cluster_D(:, 1)), max(cluster_B(:, 1)), max(cluster_E(:, 1))]), grid_count);
-y = linspace(min([min(cluster_C(:, 2)), min(cluster_D(:, 2)), min(cluster_E(:, 2))]), max([max(cluster_D(:, 2)), max(cluster_B(:, 2)), max(cluster_E(:, 2))]), grid_count);
-[X, Y] = meshgrid(x, y);
-
 % Case 2 MED, GED & MAP
+x_2 = linspace(min([min(cluster_C(:, 1)), min(cluster_D(:, 1)), min(cluster_E(:, 1))]), max([max(cluster_D(:, 1)), max(cluster_B(:, 1)), max(cluster_E(:, 1))]), grid_count);
+y_2 = linspace(min([min(cluster_C(:, 2)), min(cluster_D(:, 2)), min(cluster_E(:, 2))]), max([max(cluster_D(:, 2)), max(cluster_B(:, 2)), max(cluster_E(:, 2))]), grid_count);
+[X, Y] = meshgrid(x_2, y_2);
+
 figure(5)
 hold on;
 scatter(cluster_C(:,1), cluster_C(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
@@ -196,6 +224,10 @@ map_line_x_1 = []; map_line_y_1 = [];
 map_line_x_2 = []; map_line_y_2 = [];
 map_line_x_3 = []; map_line_y_3 = [];
 
+med2_grid = java.util.Hashtable;
+ged2_grid = java.util.Hashtable;
+map2_grid = java.util.Hashtable;
+
 for i = 1:grid_count
     for j = 1:grid_count
         point = [X(i, j), Y(i, j)];
@@ -215,7 +247,13 @@ for i = 1:grid_count
             med_line_x_3 = [med_line_x_3 point(1)];
             med_line_y_3 = [med_line_y_3 point(2)];
         end
-
+        if min([d_c d_d d_e]) == d_c
+            med2_grid.put(num2str([i,j]), "c");
+        elseif min([d_c d_d d_e]) == d_d
+            med2_grid.put(num2str([i,j]), "d");
+        else
+            med2_grid.put(num2str([i,j]), "e");
+        end
         % GED
         d_c = sqrt((point - u_c) * inv(cov_c) * (point - u_c).');
         d_d = sqrt((point - u_d) * inv(cov_d) * (point - u_d).');
@@ -231,6 +269,13 @@ for i = 1:grid_count
         if abs(d_e - d_d) < epsilon && d_e < d_c
             ged_line_x_3 = [ged_line_x_3 point(1)];
             ged_line_y_3 = [ged_line_y_3 point(2)];
+        end
+        if min([d_c d_d d_e]) == d_c
+            ged2_grid.put(num2str([i,j]), "c");
+        elseif min([d_c d_d d_e]) == d_d
+            ged2_grid.put(num2str([i,j]), "d");
+        else
+            ged2_grid.put(num2str([i,j]), "e");
         end
 
         % MAP
@@ -248,6 +293,14 @@ for i = 1:grid_count
         if abs(d_ed) < epsilon && d_ce < 0
             map_line_x_3 = [map_line_x_3 point(1)];
             map_line_y_3 = [map_line_y_3 point(2)];
+        end
+        % if C is more likely than D and C is mroe likely than E
+        if (d_cd > 0) && (d_ce > 0)
+            map2_grid.put(num2str([i,j]), "c");
+        elseif (d_cd < 0) && (d_ed < 0)
+            map2_grid.put(num2str([i,j]), "d");
+        elseif (d_ce < 0) && (d_ed > 0)
+            map2_grid.put(num2str([i,j]), "e");
         end
     end
 end
@@ -274,6 +327,8 @@ plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 nn_line_x = []; nn_line_y = [];
 knn_line_x = []; knn_line_y = [];
 
+nn2_grid = java.util.Hashtable;
+knn2_grid = java.util.Hashtable;
 for i = 1:grid_count
     for j = 1:grid_count
         point = [X(i, j), Y(i, j)];
@@ -295,7 +350,13 @@ for i = 1:grid_count
             nn_line_x = [nn_line_x point(1)];
             nn_line_y = [nn_line_y point(2)];
         end
-
+        if min([d_c d_d d_e]) == d_c
+            nn2_grid.put(num2str([i,j]), "c");
+        elseif min([d_c d_d d_e]) == d_d
+            nn2_grid.put(num2str([i,j]), "d");
+        else
+            nn2_grid.put(num2str([i,j]), "e");
+        end
         % 5NN
         d_c = mean(mink(d_C, 5)); d_d = mean(mink(d_D, 5)); d_e = mean(mink(d_E, 5));
         if abs(d_c - d_d) < epsilon && d_c < d_e
@@ -310,12 +371,221 @@ for i = 1:grid_count
             knn_line_x = [knn_line_x point(1)];
             knn_line_y = [knn_line_y point(2)];
         end
+        if min([d_c d_d d_e]) == d_c
+            knn2_grid.put(num2str([i,j]), "c");
+        elseif min([d_c d_d d_e]) == d_d
+            knn2_grid.put(num2str([i,j]), "d");
+        else
+            knn2_grid.put(num2str([i,j]), "e");
+        end
     end
 end
 
 plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
 plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
 
+
+
+%% Part 4 Error Analysis
+% case 1
+x1_min = x_1(1);
+y1_min = y_1(1);
+x1_max = x_1(grid_count);
+y1_max = y_1(grid_count);
+x1_stepsize = ((x1_max-x1_min)/grid_count);
+y1_stepsize = ((y1_max-y1_min)/grid_count);
+
+% MED
+[TA, FA] = get_error(cluster_A, med1_grid, "a", x1_min, y1_min, x1_stepsize, y1_stepsize);
+[TB, FB] = get_error(cluster_B, med1_grid, "b", x1_min, y1_min, x1_stepsize, y1_stepsize);
+
+p = (FA + FB)/(length(cluster_A) + length(cluster_B));
+confusion_matrix = [
+    [TA, FB];
+    [FA, TB];
+];
+disp(['Experimental Error Rate of Case 1 MED is: ', num2str(p)]);
+disp('Confusion matrix for A & B:');
+disp(confusion_matrix);
+
+% GED
+[TA, FA] = get_error(cluster_A, ged1_grid, "a", x1_min, y1_min, x1_stepsize, y1_stepsize);
+[TB, FB] = get_error(cluster_B, ged1_grid, "b", x1_min, y1_min, x1_stepsize, y1_stepsize);
+
+p = (FA + FB)/(length(cluster_A) + length(cluster_B));
+confusion_matrix = [
+    [TA, FB];
+    [FA, TB];
+];
+disp(['Experimental Error Rate of Case 1 GED is: ', num2str(p)]);
+disp('Confusion matrix for A & B:');
+disp(confusion_matrix);
+
+% MAP
+[TA, FA] = get_error(cluster_A, map1_grid, "a", x1_min, y1_min, x1_stepsize, y1_stepsize);
+[TB, FB] = get_error(cluster_B, map1_grid, "b", x1_min, y1_min, x1_stepsize, y1_stepsize);
+
+p = (FA + FB)/(length(cluster_A) + length(cluster_B));
+confusion_matrix = [
+    [TA, FB];
+    [FA, TB];
+];
+disp(['Experimental Error Rate of Case 1 MAP is: ', num2str(p)]);
+disp('Confusion matrix for A & B:');
+disp(confusion_matrix);
+
+% NN
+[TA, FA] = get_error(cluster_A, nn1_grid, "a", x1_min, y1_min, x1_stepsize, y1_stepsize);
+[TB, FB] = get_error(cluster_B, nn1_grid, "b", x1_min, y1_min, x1_stepsize, y1_stepsize);
+
+p = (FA + FB)/(length(cluster_A) + length(cluster_B));
+confusion_matrix = [
+    [TA, FB];
+    [FA, TB];
+];
+disp(['Experimental Error Rate of Case 1 NN is: ', num2str(p)]);
+disp('Confusion matrix for A & B:');
+disp(confusion_matrix);
+
+% 5NN
+[TA, FA] = get_error(cluster_A, knn1_grid, "a", x1_min, y1_min, x1_stepsize, y1_stepsize);
+[TB, FB] = get_error(cluster_B, knn1_grid, "b", x1_min, y1_min, x1_stepsize, y1_stepsize);
+
+p = (FA + FB)/(length(cluster_A) + length(cluster_B));
+confusion_matrix = [
+    [TA, FB];
+    [FA, TB];
+];
+disp(['Experimental Error Rate of Case 1 5NN is: ', num2str(p)]);
+disp('Confusion matrix for A & B:');
+disp(confusion_matrix);
+
+% case 2
+x2_min = x_2(1);
+y2_min = y_2(1);
+x2_max = x_2(grid_count);
+y2_max = y_2(grid_count);
+x2_stepsize = ((x2_max-x2_min)/grid_count);
+y2_stepsize = ((y2_max-y2_min)/grid_count);
+
+% MED
+[TC, FCD, FCE] = get_error_case2(cluster_C, med2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, med2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, med2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+
+p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
+confusion_matrix = [
+    [TC, FDC, FEC];
+    [FCD, TD, FED];
+    [FCE, FDE, TE];
+];
+disp(['Experimental Error Rate of Case 2 MED is: ', num2str(p)]);
+disp('Confusion matrix for C D E:');
+disp(confusion_matrix);
+
+% GED
+[TC, FCD, FCE] = get_error_case2(cluster_C, ged2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, ged2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, ged2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+
+p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
+confusion_matrix = [
+    [TC, FDC, FEC];
+    [FCD, TD, FED];
+    [FCE, FDE, TE];
+];
+disp(['Experimental Error Rate of Case 2 GED is: ', num2str(p)]);
+disp('Confusion matrix for C D E:');
+disp(confusion_matrix);
+
+% MAP
+[TC, FCD, FCE] = get_error_case2(cluster_C, map2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, map2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, map2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+
+p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
+confusion_matrix = [
+    [TC, FDC, FEC];
+    [FCD, TD, FED];
+    [FCE, FDE, TE];
+];
+disp(['Experimental Error Rate of Case 2 MAP is: ', num2str(p)]);
+disp('Confusion matrix for C D E:');
+disp(confusion_matrix);
+
+% NN
+[TC, FCD, FCE] = get_error_case2(cluster_C, nn2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, nn2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, nn2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+
+p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
+confusion_matrix = [
+    [TC, FDC, FEC];
+    [FCD, TD, FED];
+    [FCE, FDE, TE];
+];
+disp(['Experimental Error Rate of Case 2 NN is: ', num2str(p)]);
+disp('Confusion matrix for C D E:');
+disp(confusion_matrix);
+
+% 5NN
+[TC, FCD, FCE] = get_error_case2(cluster_C, knn2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, knn2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, knn2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+
+p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
+confusion_matrix = [
+    [TC, FDC, FEC];
+    [FCD, TD, FED];
+    [FCE, FDE, TE];
+];
+disp(['Experimental Error Rate of Case 2 5NN is: ', num2str(p)]);
+disp('Confusion matrix for C D E:');
+disp(confusion_matrix);
+%% funcs
 function clusters = generate_clusters(n, u, cov)
     clusters = repmat(u,n,1) + randn(n,2)*chol(cov);
+end
+
+function [ correct, incorrect ] = get_error(samp, grid, true_class,x1_min, y1_min, x1_stepsize, y1_stepsize)    
+    correct = 0;
+    N = length(samp);
+
+    for i=1:N
+        correct = correct + is_in_bound(samp(i,:), grid, true_class, x1_min, y1_min, x1_stepsize, y1_stepsize);
+    end
+    
+    incorrect = N - correct;
+end
+
+function [ result ] = is_in_bound( point, grid, true_class, x_min, y_min, x_stepsize, y_stepsize)
+    result = 0;
+    [x,y] = deal(point(1), point(2));
+
+    i_index = round((x-x_min)/x_stepsize);
+    if i_index == 0
+        i_index = 1;
+    end 
+    j_index = round((y-y_min)/y_stepsize);
+    if j_index == 0
+        j_index = 1;
+    end 
+    
+    if grid.getOrDefault(num2str([i_index,j_index]), "z") == true_class
+        result = 1;
+    end
+end
+
+function [ correct, incorrect1, incorrect2 ] = get_error_case2(samp, grid, true_class, wrong_class1, wrong_class2, x2_min, y2_min, x2_stepsize, y2_stepsize)    
+    correct = 0;
+    incorrect1 = 0;
+    incorrect2 = 0;
+    N = length(samp);
+
+    for i=1:N                                                                       
+        correct = correct + is_in_bound(samp(i,:), grid, true_class, x2_min, y2_min, x2_stepsize, y2_stepsize);
+        incorrect1 = incorrect1 + is_in_bound(samp(i,:), grid, wrong_class1, x2_min, y2_min, x2_stepsize, y2_stepsize);
+        incorrect2 = incorrect2 + is_in_bound(samp(i,:), grid, wrong_class2, x2_min, y2_min, x2_stepsize, y2_stepsize);
+    end
+    
 end
