@@ -45,12 +45,16 @@ figure(1)
 hold on;
 plot_ellipse(u_a(1),u_a(2),theta_a,sqrt(eig_vals_a(2,2)),sqrt(eig_vals_a(1,1)),'r')
 plot_ellipse(u_b(1),u_b(2),theta_b,sqrt(eig_vals_b(2,2)),sqrt(eig_vals_b(1,1)),'b')
+title('Unit Standard Deviation Contour: Class A & B','FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 scatter(cluster_A(:,1), cluster_A(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
 scatter(cluster_B(:,1), cluster_B(:,2), "MarkerEdgeColor", "#0072BD");
 
 plot(u_a(1), u_a(2), 'or', 'MarkerFaceColor','r');
 plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B');
 
 % Case 2
 theta_c = atan(eig_vecs_c(2,2)/eig_vecs_c(2,1));
@@ -59,17 +63,22 @@ theta_e = atan(eig_vecs_e(2,2)/eig_vecs_e(2,1));
 
 figure(2)
 hold on;
-scatter(cluster_C(:,1), cluster_C(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
-scatter(cluster_D(:,1), cluster_D(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
-scatter(cluster_E(:,1), cluster_E(:,2), "MarkerEdgeColor",[0.4660 0.6740 0.1880]);
-
 plot_ellipse(u_c(1),u_c(2),theta_c,sqrt(eig_vals_c(2,2)),sqrt(eig_vals_c(1,1)),'r')
 plot_ellipse(u_d(1),u_d(2),theta_d,sqrt(eig_vals_d(2,2)),sqrt(eig_vals_d(1,1)),'b')
 plot_ellipse(u_e(1),u_e(2),theta_e,sqrt(eig_vals_e(2,2)),sqrt(eig_vals_e(1,1)),'g')
 
+
+scatter(cluster_C(:,1), cluster_C(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
+scatter(cluster_D(:,1), cluster_D(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
+scatter(cluster_E(:,1), cluster_E(:,2), "MarkerEdgeColor",[0.4660 0.6740 0.1880]);
+title('Unit Standard Deviation Contour: Class C, D & E','FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
+
 plot(u_c(1), u_c(2), 'or', 'MarkerFaceColor','r');
 plot(u_d(1), u_d(2), 'ob', 'MarkerFaceColor','b');
 plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
+legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E');
 
 %% Part 3: Classifiers
 grid_count = 1000;
