@@ -45,12 +45,18 @@ figure(1)
 hold on;
 plot_ellipse(u_a(1),u_a(2),theta_a,sqrt(eig_vals_a(2,2)),sqrt(eig_vals_a(1,1)),'r')
 plot_ellipse(u_b(1),u_b(2),theta_b,sqrt(eig_vals_b(2,2)),sqrt(eig_vals_b(1,1)),'b')
+title('Unit Standard Deviation Contour: Class A & B','FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 scatter(cluster_A(:,1), cluster_A(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
 scatter(cluster_B(:,1), cluster_B(:,2), "MarkerEdgeColor", "#0072BD");
 
 plot(u_a(1), u_a(2), 'or', 'MarkerFaceColor','r');
 plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B');
+
+hold off
 
 % Case 2
 theta_c = atan(eig_vecs_c(2,2)/eig_vecs_c(2,1));
@@ -59,17 +65,24 @@ theta_e = atan(eig_vecs_e(2,2)/eig_vecs_e(2,1));
 
 figure(2)
 hold on;
-scatter(cluster_C(:,1), cluster_C(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
-scatter(cluster_D(:,1), cluster_D(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
-scatter(cluster_E(:,1), cluster_E(:,2), "MarkerEdgeColor",[0.4660 0.6740 0.1880]);
-
 plot_ellipse(u_c(1),u_c(2),theta_c,sqrt(eig_vals_c(2,2)),sqrt(eig_vals_c(1,1)),'r')
 plot_ellipse(u_d(1),u_d(2),theta_d,sqrt(eig_vals_d(2,2)),sqrt(eig_vals_d(1,1)),'b')
 plot_ellipse(u_e(1),u_e(2),theta_e,sqrt(eig_vals_e(2,2)),sqrt(eig_vals_e(1,1)),'g')
 
+
+scatter(cluster_C(:,1), cluster_C(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
+scatter(cluster_D(:,1), cluster_D(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
+scatter(cluster_E(:,1), cluster_E(:,2), "MarkerEdgeColor",[0.4660 0.6740 0.1880]);
+title('Unit Standard Deviation Contour: Class C, D & E','FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
+
 plot(u_c(1), u_c(2), 'or', 'MarkerFaceColor','r');
 plot(u_d(1), u_d(2), 'ob', 'MarkerFaceColor','b');
 plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
+legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E');
+
+hold off
 
 %% Part 3: Classifiers
 grid_count = 1000;
@@ -140,10 +153,14 @@ for i = 1:grid_count
     end
 end
 
-plot(med_line_x, med_line_y, '-k', 'LineWidth', 3);
-plot(ged_line_x, ged_line_y, '-r', 'LineWidth', 3);
-plot(map_line_x, map_line_y, '-m', 'LineWidth', 3);
-
+title('Case 1 MED, GED & MAP','FontSize', 14)
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
+med = plot(med_line_x, med_line_y, '-k', 'LineWidth', 3, 'DisplayName','MED');
+ged = plot(ged_line_x, ged_line_y, '-r', 'LineWidth', 3, 'DisplayName','GED');
+map = plot(map_line_x, map_line_y, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'MED', 'GED', 'MAP');
+hold off
 
 % Case 1 NN & 5NN
 figure(4)
@@ -192,8 +209,13 @@ for i = 1:grid_count
     end
 end
 
-plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
-plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
+title('Case 1 NN & 5NN','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
+knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'NN', '5NN');
+hold off
 
 % Case 2 MED, GED & MAP
 x_2 = linspace(min([min(cluster_C(:, 1)), min(cluster_D(:, 1)), min(cluster_E(:, 1))]), max([max(cluster_D(:, 1)), max(cluster_B(:, 1)), max(cluster_E(:, 1))]), grid_count);
@@ -296,18 +318,23 @@ for i = 1:grid_count
         end
         % if C is more likely than D and C is mroe likely than E
         if (d_cd > 0) && (d_ce > 0)
-            map1_grid.put(num2str([i,j]), "c");
+            map2_grid.put(num2str([i,j]), "c");
         elseif (d_cd < 0) && (d_ed < 0)
-            map1_grid.put(num2str([i,j]), "d");
+            map2_grid.put(num2str([i,j]), "d");
         elseif (d_ce < 0) && (d_ed > 0)
-            map1_grid.put(num2str([i,j]), "e");
+            map2_grid.put(num2str([i,j]), "e");
         end
     end
 end
 
-plot(med_line_x_1, med_line_y_1, '-k', med_line_x_2, med_line_y_2, '-k', med_line_x_3, med_line_y_3, '-k', 'LineWidth', 3);
-plot(ged_line_x_1, ged_line_y_1, '-r', ged_line_x_2, ged_line_y_2, '-r', ged_line_x_3, ged_line_y_3, '-r', 'LineWidth', 3);
-plot(map_line_x_1, map_line_y_1, '-m', map_line_x_2, map_line_y_2, '-m', map_line_x_3, map_line_y_3, '-m', 'LineWidth', 3);
+title('Case 2 MED, GED & MAP','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+med = plot(med_line_x_1, med_line_y_1, '-k', med_line_x_2, med_line_y_2, '-k', med_line_x_3, med_line_y_3, '-k', 'LineWidth', 3, 'DisplayName','MED');
+ged = plot(ged_line_x_1, ged_line_y_1, '-r', ged_line_x_2, ged_line_y_2, '-r', ged_line_x_3, ged_line_y_3, '-r', 'LineWidth', 3, 'DisplayName','GED');
+map = plot(map_line_x_1, map_line_y_1, '-m', map_line_x_2, map_line_y_2, '-m', map_line_x_3, map_line_y_3, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+legend([med ged map])
+hold off
 
 % Case 2 NN, 5NN
 figure(6)
@@ -327,8 +354,8 @@ plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 nn_line_x = []; nn_line_y = [];
 knn_line_x = []; knn_line_y = [];
 
-nn1_grid = java.util.Hashtable;
-knn1_grid = java.util.Hashtable;
+nn2_grid = java.util.Hashtable;
+knn2_grid = java.util.Hashtable;
 for i = 1:grid_count
     for j = 1:grid_count
         point = [X(i, j), Y(i, j)];
@@ -381,10 +408,13 @@ for i = 1:grid_count
     end
 end
 
-plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
-plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
-
-
+title('Case 2 NN & 5NN','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
+knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+legend([nn knn])
+hold off
 
 %% Part 4 Error Analysis
 % case 1
@@ -498,10 +528,10 @@ disp(['Experimental Error Rate of Case 2 GED is: ', num2str(p)]);
 disp('Confusion matrix for C D E:');
 disp(confusion_matrix);
 
-% GED
-[TC, FCD, FCE] = get_error_case2(cluster_C, ged2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
-[TD, FDC, FDE] = get_error_case2(cluster_D, ged2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
-[TE, FEC, FED] = get_error_case2(cluster_E, ged2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
+% MAP
+[TC, FCD, FCE] = get_error_case2(cluster_C, map2_grid, "c", "d", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TD, FDC, FDE] = get_error_case2(cluster_D, map2_grid, "d", "c", "e", x2_min, y2_min, x2_stepsize, y2_stepsize);
+[TE, FEC, FED] = get_error_case2(cluster_E, map2_grid, "e", "c", "d", x2_min, y2_min, x2_stepsize, y2_stepsize);
 
 p = 1 - (TC + TD + TE)/(length(cluster_C) + length(cluster_D) + length(cluster_E));
 confusion_matrix = [
@@ -509,7 +539,7 @@ confusion_matrix = [
     [FCD, TD, FED];
     [FCE, FDE, TE];
 ];
-disp(['Experimental Error Rate of Case 2 GED is: ', num2str(p)]);
+disp(['Experimental Error Rate of Case 2 MAP is: ', num2str(p)]);
 disp('Confusion matrix for C D E:');
 disp(confusion_matrix);
 
@@ -570,9 +600,8 @@ function [ result ] = is_in_bound( point, grid, true_class, x_min, y_min, x_step
     if j_index == 0
         j_index = 1;
     end 
-    disp(i_index);
-    disp(j_index);
-    if grid.get(num2str([i_index,j_index])) == true_class
+    
+    if grid.getOrDefault(num2str([i_index,j_index]), "z") == true_class
         result = 1;
     end
 end
@@ -583,7 +612,7 @@ function [ correct, incorrect1, incorrect2 ] = get_error_case2(samp, grid, true_
     incorrect2 = 0;
     N = length(samp);
 
-    for i=1:N
+    for i=1:N                                                                       
         correct = correct + is_in_bound(samp(i,:), grid, true_class, x2_min, y2_min, x2_stepsize, y2_stepsize);
         incorrect1 = incorrect1 + is_in_bound(samp(i,:), grid, wrong_class1, x2_min, y2_min, x2_stepsize, y2_stepsize);
         incorrect2 = incorrect2 + is_in_bound(samp(i,:), grid, wrong_class2, x2_min, y2_min, x2_stepsize, y2_stepsize);

@@ -56,6 +56,8 @@ plot(u_a(1), u_a(2), 'or', 'MarkerFaceColor','r');
 plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
 legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B');
 
+hold off
+
 % Case 2
 theta_c = atan(eig_vecs_c(2,2)/eig_vecs_c(2,1));
 theta_d = atan(eig_vecs_d(2,2)/eig_vecs_d(2,1));
@@ -79,6 +81,8 @@ plot(u_c(1), u_c(2), 'or', 'MarkerFaceColor','r');
 plot(u_d(1), u_d(2), 'ob', 'MarkerFaceColor','b');
 plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E');
+
+hold off
 
 %% Part 3: Classifiers
 grid_count = 1000;
@@ -149,10 +153,14 @@ for i = 1:grid_count
     end
 end
 
-plot(med_line_x, med_line_y, '-k', 'LineWidth', 3);
-plot(ged_line_x, ged_line_y, '-r', 'LineWidth', 3);
-plot(map_line_x, map_line_y, '-m', 'LineWidth', 3);
-
+title('Case 1 MED, GED & MAP','FontSize', 14)
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
+med = plot(med_line_x, med_line_y, '-k', 'LineWidth', 3, 'DisplayName','MED');
+ged = plot(ged_line_x, ged_line_y, '-r', 'LineWidth', 3, 'DisplayName','GED');
+map = plot(map_line_x, map_line_y, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'MED', 'GED', 'MAP');
+hold off
 
 % Case 1 NN & 5NN
 figure(4)
@@ -201,8 +209,13 @@ for i = 1:grid_count
     end
 end
 
-plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
-plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
+title('Case 1 NN & 5NN','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
+knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'NN', '5NN');
+hold off
 
 % Case 2 MED, GED & MAP
 x_2 = linspace(min([min(cluster_C(:, 1)), min(cluster_D(:, 1)), min(cluster_E(:, 1))]), max([max(cluster_D(:, 1)), max(cluster_B(:, 1)), max(cluster_E(:, 1))]), grid_count);
@@ -314,9 +327,14 @@ for i = 1:grid_count
     end
 end
 
-plot(med_line_x_1, med_line_y_1, '-k', med_line_x_2, med_line_y_2, '-k', med_line_x_3, med_line_y_3, '-k', 'LineWidth', 3);
-plot(ged_line_x_1, ged_line_y_1, '-r', ged_line_x_2, ged_line_y_2, '-r', ged_line_x_3, ged_line_y_3, '-r', 'LineWidth', 3);
-plot(map_line_x_1, map_line_y_1, '-m', map_line_x_2, map_line_y_2, '-m', map_line_x_3, map_line_y_3, '-m', 'LineWidth', 3);
+title('Case 2 MED, GED & MAP','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+med = plot(med_line_x_1, med_line_y_1, '-k', med_line_x_2, med_line_y_2, '-k', med_line_x_3, med_line_y_3, '-k', 'LineWidth', 3, 'DisplayName','MED');
+ged = plot(ged_line_x_1, ged_line_y_1, '-r', ged_line_x_2, ged_line_y_2, '-r', ged_line_x_3, ged_line_y_3, '-r', 'LineWidth', 3, 'DisplayName','GED');
+map = plot(map_line_x_1, map_line_y_1, '-m', map_line_x_2, map_line_y_2, '-m', map_line_x_3, map_line_y_3, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E', 'MED', 'GED', 'MAP');
+hold off
 
 % Case 2 NN, 5NN
 figure(6)
@@ -390,10 +408,13 @@ for i = 1:grid_count
     end
 end
 
-plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3);
-plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3);
-
-
+title('Case 2 NN & 5NN','FontSize', 14)
+xlabel('x1','FontSize', 14) 
+ylabel('x2','FontSize', 14) 
+nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
+knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E', 'NN', '5NN');
+hold off
 
 %% Part 4 Error Analysis
 % case 1
