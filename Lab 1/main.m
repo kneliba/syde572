@@ -86,7 +86,6 @@ hold off
 
 %% Part 3: Classifiers
 grid_count = 1000;
-epsilon = 0.01;
 x_1 = linspace(min([min(cluster_A(:, 1)), min(cluster_B(:, 1))]), max([max(cluster_A(:, 1)), max(cluster_B(:, 1))]), grid_count);
 y_1 = linspace(min([min(cluster_A(:, 2)), max(cluster_B(:, 2))]), max([max(cluster_A(:, 2)), max(cluster_B(:, 2))]), grid_count);
 [X, Y] = meshgrid(x_1, y_1);
@@ -103,9 +102,9 @@ scatter(cluster_B(:,1), cluster_B(:,2), "MarkerEdgeColor", "#0072BD");
 plot(u_a(1), u_a(2), 'or', 'MarkerFaceColor','r');
 plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
 
-med_line_x = []; med_line_y = [];
-ged_line_x = []; ged_line_y = [];
-map_line_x = []; map_line_y = [];
+med = zeros(grid_count);
+ged = zeros(grid_count);
+map = zeros(grid_count);
 
 med1_grid = java.util.Hashtable;
 ged1_grid = java.util.Hashtable;
@@ -117,9 +116,8 @@ for i = 1:grid_count
         % MED
         d_a = sqrt((point - u_a) * (point - u_a).');
         d_b = sqrt((point - u_b) * (point - u_b).');
-        if abs(d_a - d_b) < epsilon
-            med_line_x = [med_line_x point(1)];
-            med_line_y = [med_line_y point(2)];
+        if d_a < d_b
+            med(i, j) = 1;
         end
         if d_a < d_b
             med1_grid.put(num2str([i,j]), "a");
@@ -131,9 +129,8 @@ for i = 1:grid_count
         % GED
         d_a = sqrt((point - u_a) * inv(cov_a) * (point - u_a).');
         d_b = sqrt((point - u_b) * inv(cov_b) * (point - u_b).');
-        if abs(d_a - d_b) < epsilon
-            ged_line_x = [ged_line_x point(1)];
-            ged_line_y = [ged_line_y point(2)];
+        if d_a < d_b
+            ged(i, j) = 1;
         end
         if d_a < d_b
             ged1_grid.put(num2str([i,j]), "a");
@@ -141,9 +138,8 @@ for i = 1:grid_count
             ged1_grid.put(num2str([i,j]), "b");
         end
         % MAP
-        if abs(d_b^2 - d_a^2 - 2*log(n_b/n_a) - log(det(cov_a) / det(cov_b))) < epsilon
-            map_line_x = [map_line_x point(1)];
-            map_line_y = [map_line_y point(2)];
+        if d_b^2 - d_a^2 > 2*log(n_b/n_a) + log(det(cov_a) / det(cov_b))
+            map(i, j) = 1;
         end
         if d_b^2 - d_a^2 > 2*log(n_b/n_a) + log(det(cov_a) / det(cov_b))
             map1_grid.put(num2str([i,j]), "a");
@@ -156,9 +152,9 @@ end
 title('Case 1 MED, GED & MAP','FontSize', 14)
 xlabel('x1','FontSize', 14);
 ylabel('x2','FontSize', 14);
-med = plot(med_line_x, med_line_y, '-k', 'LineWidth', 3, 'DisplayName','MED');
-ged = plot(ged_line_x, ged_line_y, '-r', 'LineWidth', 3, 'DisplayName','GED');
-map = plot(map_line_x, map_line_y, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+contour(X, Y, med, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, ged, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, map, 2, 'Color', 'k', 'LineWidth', 3);
 legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'MED', 'GED', 'MAP');
 hold off
 
@@ -174,8 +170,8 @@ scatter(cluster_B(:,1), cluster_B(:,2), "MarkerEdgeColor", "#0072BD");
 plot(u_a(1), u_a(2), 'or', 'MarkerFaceColor','r');
 plot(u_b(1), u_b(2), 'ob', 'MarkerFaceColor','b');
 
-nn_line_x = []; nn_line_y = [];
-knn_line_x = []; knn_line_y = [];
+nn = zeros(grid_count);
+knn = zeros(grid_count);
 
 nn1_grid = java.util.Hashtable;
 knn1_grid = java.util.Hashtable;
@@ -186,9 +182,8 @@ for i = 1:grid_count
         d_B = sqrt(diag((cluster_B - point) * (cluster_B - point).'));
         
         % NN
-        if abs(min(d_A) - min(d_B)) < epsilon
-            nn_line_x = [nn_line_x point(1)];
-            nn_line_y = [nn_line_y point(2)];
+        if min(d_A) < min(d_B)
+            nn(i, j) = 1;
         end
         if min(d_A) < min(d_B)
             nn1_grid.put(num2str([i,j]), "a");
@@ -197,9 +192,8 @@ for i = 1:grid_count
         end
 
         % 5NN
-        if abs(mean(mink(d_A, 5)) - mean(mink(d_B, 5))) < epsilon
-            knn_line_x = [knn_line_x point(1)];
-            knn_line_y = [knn_line_y point(2)];
+        if mean(mink(d_A, 5)) < mean(mink(d_B, 5))
+            knn(i, j) = 1;
         end
         if mean(mink(d_A, 5)) <  mean(mink(d_B, 5))
             knn1_grid.put(num2str([i,j]), "a");
@@ -212,8 +206,8 @@ end
 title('Case 1 NN & 5NN','FontSize', 14)
 xlabel('x1','FontSize', 14) 
 ylabel('x2','FontSize', 14) 
-nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
-knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+contour(X, Y, nn, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, knn, 2, 'Color', 'r', 'LineWidth', 3);
 legend('Contour A', 'Contour B', 'Cluster A', 'Cluster B', 'mean A', 'mean B', 'NN', '5NN');
 hold off
 
@@ -236,15 +230,9 @@ plot(u_c(1), u_c(2), 'or', 'MarkerFaceColor','r');
 plot(u_d(1), u_d(2), 'ob', 'MarkerFaceColor','b');
 plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 
-med_line_x_1 = []; med_line_y_1 = [];
-med_line_x_2 = []; med_line_y_2 = [];
-med_line_x_3 = []; med_line_y_3 = [];
-ged_line_x_1 = []; ged_line_y_1 = [];
-ged_line_x_2 = []; ged_line_y_2 = [];
-ged_line_x_3 = []; ged_line_y_3 = [];
-map_line_x_1 = []; map_line_y_1 = [];
-map_line_x_2 = []; map_line_y_2 = [];
-map_line_x_3 = []; map_line_y_3 = [];
+med = zeros(grid_count);
+ged = zeros(grid_count);
+map = zeros(grid_count);
 
 med2_grid = java.util.Hashtable;
 ged2_grid = java.util.Hashtable;
@@ -257,17 +245,14 @@ for i = 1:grid_count
         d_c = sqrt((point - u_c) * (point - u_c).');
         d_d = sqrt((point - u_d) * (point - u_d).');
         d_e = sqrt((point - u_e) * (point - u_e).');
-        if abs(d_c - d_d) < epsilon && d_c < d_e
-            med_line_x_1 = [med_line_x_1 point(1)];
-            med_line_y_1 = [med_line_y_1 point(2)];
+        if d_c < d_d && d_c < d_e
+            med(i, j) = 1;
         end
-        if abs(d_c - d_e) < epsilon && d_c < d_d
-            med_line_x_2 = [med_line_x_2 point(1)];
-            med_line_y_2 = [med_line_y_2 point(2)];
+        if d_d < d_c && d_d < d_e
+            med(i, j) = 0;
         end
-        if abs(d_e - d_d) < epsilon && d_e < d_c
-            med_line_x_3 = [med_line_x_3 point(1)];
-            med_line_y_3 = [med_line_y_3 point(2)];
+        if d_e < d_c && d_e < d_e
+            med(i, j) = -1;
         end
         if min([d_c d_d d_e]) == d_c
             med2_grid.put(num2str([i,j]), "c");
@@ -280,17 +265,14 @@ for i = 1:grid_count
         d_c = sqrt((point - u_c) * inv(cov_c) * (point - u_c).');
         d_d = sqrt((point - u_d) * inv(cov_d) * (point - u_d).');
         d_e = sqrt((point - u_e) * inv(cov_e) * (point - u_e).');
-        if abs(d_c - d_d) < epsilon && d_c < d_e
-            ged_line_x_1 = [ged_line_x_1 point(1)];
-            ged_line_y_1 = [ged_line_y_1 point(2)];
+        if d_c < d_d && d_c < d_e
+            ged(i, j) = 1;
         end
-        if abs(d_c - d_e) < epsilon && d_c < d_d
-            ged_line_x_2 = [ged_line_x_2 point(1)];
-            ged_line_y_2 = [ged_line_y_2 point(2)];
+        if d_d < d_c && d_d < d_e
+            ged(i, j) = 0;
         end
-        if abs(d_e - d_d) < epsilon && d_e < d_c
-            ged_line_x_3 = [ged_line_x_3 point(1)];
-            ged_line_y_3 = [ged_line_y_3 point(2)];
+        if d_e < d_c && d_e < d_d
+            ged(i, j) = -1;
         end
         if min([d_c d_d d_e]) == d_c
             ged2_grid.put(num2str([i,j]), "c");
@@ -304,17 +286,14 @@ for i = 1:grid_count
         d_cd = d_d^2 - d_c^2 - 2*log(n_d/n_c) - log(det(cov_c) / det(cov_d));
         d_ce = d_e^2 - d_c^2 - 2*log(n_e/n_c) - log(det(cov_c) / det(cov_e));
         d_ed = d_d^2 - d_e^2 - 2*log(n_d/n_e) - log(det(cov_e) / det(cov_d));
-        if abs(d_cd) < epsilon && d_ce > 0
-            map_line_x_1 = [map_line_x_1 point(1)];
-            map_line_y_1 = [map_line_y_1 point(2)];
+        if (d_cd > 0) && (d_ce > 0)
+            map(i, j) = 1;
         end
-        if abs(d_ce) < epsilon && d_cd > 0
-            map_line_x_2 = [map_line_x_2 point(1)];
-            map_line_y_2 = [map_line_y_2 point(2)];
+        if (d_cd < 0) && (d_ed < 0)
+            map(i, j) = 0;
         end
-        if abs(d_ed) < epsilon && d_ce < 0
-            map_line_x_3 = [map_line_x_3 point(1)];
-            map_line_y_3 = [map_line_y_3 point(2)];
+        if (d_ce < 0) && (d_ed > 0)
+            map(i, j) = -1;
         end
         % if C is more likely than D and C is mroe likely than E
         if (d_cd > 0) && (d_ce > 0)
@@ -330,9 +309,9 @@ end
 title('Case 2 MED, GED & MAP','FontSize', 14)
 xlabel('x1','FontSize', 14) 
 ylabel('x2','FontSize', 14) 
-med = plot(med_line_x_1, med_line_y_1, '-k', med_line_x_2, med_line_y_2, '-k', med_line_x_3, med_line_y_3, '-k', 'LineWidth', 3, 'DisplayName','MED');
-ged = plot(ged_line_x_1, ged_line_y_1, '-r', ged_line_x_2, ged_line_y_2, '-r', ged_line_x_3, ged_line_y_3, '-r', 'LineWidth', 3, 'DisplayName','GED');
-map = plot(map_line_x_1, map_line_y_1, '-m', map_line_x_2, map_line_y_2, '-m', map_line_x_3, map_line_y_3, '-m', 'LineWidth', 3, 'DisplayName','MAP');
+contour(X, Y, med, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, ged, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, map, 2, 'Color', 'k', 'LineWidth', 3);
 legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E', 'MED', 'GED', 'MAP');
 hold off
 
@@ -351,8 +330,8 @@ plot(u_c(1), u_c(2), 'or', 'MarkerFaceColor','r');
 plot(u_d(1), u_d(2), 'ob', 'MarkerFaceColor','b');
 plot(u_e(1), u_e(2), 'og', 'MarkerFaceColor','g');
 
-nn_line_x = []; nn_line_y = [];
-knn_line_x = []; knn_line_y = [];
+nn = zeros(grid_count);
+knn = zeros(grid_count);
 
 nn2_grid = java.util.Hashtable;
 knn2_grid = java.util.Hashtable;
@@ -365,17 +344,14 @@ for i = 1:grid_count
         
         % NN
         d_c = min(d_C); d_d = min(d_D); d_e = min(d_E);
-        if abs(d_c - d_d) < epsilon && d_c < d_e
-            nn_line_x = [nn_line_x point(1)];
-            nn_line_y = [nn_line_y point(2)];
+        if d_c < d_d && d_c < d_e
+            nn(i,j) = 1;
         end
-        if abs(d_c - d_e) < epsilon && d_c < d_d
-            nn_line_x = [nn_line_x point(1)];
-            nn_line_y = [nn_line_y point(2)];
+        if d_d < d_c && d_d < d_e
+            nn(i,j) = 0;
         end
-        if abs(d_e - d_d) < epsilon && d_e < d_c
-            nn_line_x = [nn_line_x point(1)];
-            nn_line_y = [nn_line_y point(2)];
+        if d_e < d_c && d_e < d_d
+            nn(i,j) = -1;
         end
         if min([d_c d_d d_e]) == d_c
             nn2_grid.put(num2str([i,j]), "c");
@@ -386,17 +362,14 @@ for i = 1:grid_count
         end
         % 5NN
         d_c = mean(mink(d_C, 5)); d_d = mean(mink(d_D, 5)); d_e = mean(mink(d_E, 5));
-        if abs(d_c - d_d) < epsilon && d_c < d_e
-            knn_line_x = [knn_line_x point(1)];
-            knn_line_y = [knn_line_y point(2)];
+        if d_c < d_d && d_c < d_e
+            knn(i,j) = 1;
         end
-        if abs(d_c - d_e) < epsilon && d_c < d_d
-            knn_line_x = [knn_line_x point(1)];
-            knn_line_y = [knn_line_y point(2)];
+        if d_d < d_c && d_d < d_e
+            knn(i,j) = 0;
         end
-        if abs(d_e - d_d) < epsilon && d_e < d_c
-            knn_line_x = [knn_line_x point(1)];
-            knn_line_y = [knn_line_y point(2)];
+        if d_e < d_c && d_e < d_d
+            knn(i,j) = -1;
         end
         if min([d_c d_d d_e]) == d_c
             knn2_grid.put(num2str([i,j]), "c");
@@ -411,8 +384,8 @@ end
 title('Case 2 NN & 5NN','FontSize', 14)
 xlabel('x1','FontSize', 14) 
 ylabel('x2','FontSize', 14) 
-nn = plot(nn_line_x, nn_line_y, '.k', 'LineWidth', 3, 'DisplayName','NN');
-knn = plot(knn_line_x, knn_line_y, '.r', 'LineWidth', 3, 'DisplayName','5NN');
+contour(X, Y, nn, 2, 'Color', 'k', 'LineWidth', 3);
+contour(X, Y, knn, 2, 'Color', 'r', 'LineWidth', 3);
 legend('Contour C', 'Contour D', 'Contour E','Cluster C', 'Cluster D', 'Cluster E', 'mean C', 'mean D', 'mean E', 'NN', '5NN');
 hold off
 
