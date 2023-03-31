@@ -170,8 +170,9 @@ hold on;
 scatter(al(:,1), al(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
 scatter(bl(:,1), bl(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
 scatter(cl(:,1), cl(:,2), "MarkerEdgeColor", [0.4660 0.6740 0.1880]);
-contour(XX, YY, ml, 2, 'Color', 'm', 'LineWidth', 3);
-title('Parametric Estimation - Class Boundaries','FontSize', 14);
+contour(XX, YY, ml, 2, 'Color', 'm', 'LineWidth', 2);
+legend('al', 'bl', 'cl', 'decision boundary');
+title('Parametric Estimation - Decision Boundary','FontSize', 14);
 xlabel('x1','FontSize', 14);
 ylabel('x2','FontSize', 14);
 
@@ -180,8 +181,9 @@ hold on;
 scatter(al(:,1), al(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
 scatter(bl(:,1), bl(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
 scatter(cl(:,1), cl(:,2), "MarkerEdgeColor", [0.4660 0.6740 0.1880]);
-contour(XX, YY, pw, 2, 'Color', 'm', 'LineWidth', 3);
-title('Nonparametric Estimation - Class Boundaries','FontSize', 14);
+contour(XX, YY, pw, 2, 'Color', 'm', 'LineWidth', 2);
+legend('al', 'bl', 'cl', 'decision boundary');
+title('Non-parametric Estimation - Decision Boundary','FontSize', 14);
 xlabel('x1','FontSize', 14);
 ylabel('x2','FontSize', 14);
 
@@ -209,8 +211,9 @@ for classifer = 1:3
     hold on;
     scatter(a(:,1), a(:,2), "MarkerEdgeColor", [0.8500 0.3250 0.0980]);
     scatter(b(:,1), b(:,2), "MarkerEdgeColor", [0 0.4470 0.7410]);
-    contour(X, Y, seq, 2, 'Color', 'm', 'LineWidth', 3);
-    title(sprintf('Sequencial Discriminant %d - Class Boundaries', classifer),'FontSize', 14);
+    contour(X, Y, seq, 2, 'Color', 'm', 'LineWidth', 2);
+    legend('a', 'b', 'decision boundary');
+    title(sprintf('Sequencial Discriminant %d - Decision Boundary', classifer),'FontSize', 14);
     xlabel('x1','FontSize', 14);
     ylabel('x2','FontSize', 14);
 end
@@ -228,10 +231,10 @@ end
 
 figure(11)
 hold on;
-plot(1:5, max(all_errors, [], 2), 'Color', 'r', 'LineWidth', 3)
-plot(1:5, min(all_errors, [], 2), 'Color', 'g', 'LineWidth', 3)
-plot(1:5, mean(all_errors, 2), 'Color', 'b', 'LineWidth', 3)
-plot(1:5, std(all_errors, 0, 2), 'Color', 'c', 'LineWidth', 3)
+plot(1:5, max(all_errors, [], 2), 'Color', 'r', 'LineWidth', 2)
+plot(1:5, min(all_errors, [], 2), 'Color', 'g', 'LineWidth', 2)
+plot(1:5, mean(all_errors, 2), 'Color', 'b', 'LineWidth', 2)
+plot(1:5, std(all_errors, 0, 2), 'Color', 'c', 'LineWidth', 2)
 legend('Max Error', 'Min Error', 'Mean of Error', 'Std of Error');
 title('Sequencial Discriminant Error Rates','FontSize', 14);
 xlabel('J','FontSize', 14);
