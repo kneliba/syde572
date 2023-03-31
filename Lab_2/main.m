@@ -26,6 +26,7 @@ b_plot_true = exp(-b_lambda_true * x);
 
 figure(1)
 hold on
+grid on
 plot(x, a_plot_true, 'b', 'LineWidth',1.6);
 plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
@@ -46,6 +47,7 @@ b_plot_true = exp(-b_lambda_true * x);
 
 figure(2)
 hold on
+grid on
 plot(x, a_plot_true, 'b', 'LineWidth',1.6);
 plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
@@ -69,6 +71,7 @@ b_plot_true = exp(-b_lambda_true * x);
 
 figure(3)
 hold on
+grid on
 plot(x, a_plot_true, 'b', 'LineWidth',1.6);
 plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
@@ -88,6 +91,7 @@ b_plot_est = parzen1d(b, x, 0.1, b_size(2));
 
 figure(4)
 hold on
+grid on
 plot(x, a_plot_true, 'b', 'LineWidth',1.6);
 plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
@@ -103,6 +107,7 @@ b_plot_est = parzen1d(b, x, 0.4, b_size(2));
 
 figure(5)
 hold on
+grid on
 plot(x, a_plot_true, 'b', 'LineWidth',1.6);
 plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
