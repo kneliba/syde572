@@ -31,7 +31,9 @@ plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
 plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
 legend("True a", "Estimated a","True b", "Estimated b");
-title("Parametric Estimation - Gaussian");
+title("Parametric Estimation - Gaussian", 'FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 % part 2 - Exponential
 x = 0:0.0001:10;
@@ -49,7 +51,9 @@ plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
 plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
 legend("True a", "Estimated a","True b", "Estimated b");
-title("Parametric Estimation - Exponential");
+title("Parametric Estimation - Exponential", 'FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 % part 3 - Uniform Distribution
 a_est_a = min(a);
@@ -70,7 +74,9 @@ plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
 plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
 legend("True a", "Estimated a","True b", "Estimated b");
-title("Parametric Estimation - Uniform");
+title("Parametric Estimation - Uniform", 'FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 % part 4 - Parzen Window
 x = linspace(0, 10);
@@ -87,7 +93,9 @@ plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
 plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
 legend("True a", "Estimated a","True b", "Estimated b");
-title("Parzen Window with Standard Deviation of 0.1");
+title("Parzen Window with Standard Deviation of 0.1", 'FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 % Gaussian Window with standard deviation of 0.4
 a_plot_est = parzen1d(a, x, 0.4, a_size(2));
@@ -100,7 +108,9 @@ plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
 plot(x, b_plot_true, 'r', 'LineWidth',1.6);
 plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
 legend("True a", "Estimated a","True b", "Estimated b");
-title("Parzen Window with Standard Deviation of 0.4");
+title("Parzen Window with Standard Deviation of 0.4", 'FontSize', 14);
+xlabel('x1','FontSize', 14);
+ylabel('x2','FontSize', 14);
 
 
 %% Model Estimation 2D Case
