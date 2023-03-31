@@ -1,4 +1,5 @@
-clear;
+clear all;
+close all;
 
 % import parzen function
 addpath 'SYDE572/lab_2_code'
@@ -24,14 +25,12 @@ b_plot_est = 1/(b_est_sig*sqrt(2*pi))*exp(((-(x-b_est_mu).^2)/(2*b_est_sig.^2)))
 b_plot_true = exp(-b_lambda_true * x);
 
 figure(1)
-plot(x, a_plot_est);
 hold on
-plot(x, a_plot_true);
-hold on
-plot(x, b_plot_est);
-hold on
-plot(x, b_plot_true);
-legend("Estimated a", "True a", "Estimated b", "True b");
+plot(x, a_plot_true, 'b', 'LineWidth',1.6);
+plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
+plot(x, b_plot_true, 'r', 'LineWidth',1.6);
+plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
+legend("True a", "Estimated a","True b", "Estimated b");
 title("Parametric Estimation - Gaussian");
 
 % part 2 - Exponential
@@ -44,14 +43,12 @@ b_plot_est = exp(-b_lambda_est * x);
 b_plot_true = exp(-b_lambda_true * x);
 
 figure(2)
-plot(x, a_plot_est);
 hold on
-plot(x, a_plot_true);
-hold on
-plot(x, b_plot_est);
-hold on
-plot(x, b_plot_true);
-legend("Estimated a", "True a", "Estimated b", "True b");
+plot(x, a_plot_true, 'b', 'LineWidth',1.6);
+plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
+plot(x, b_plot_true, 'r', 'LineWidth',1.6);
+plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
+legend("True a", "Estimated a","True b", "Estimated b");
 title("Parametric Estimation - Exponential");
 
 % part 3 - Uniform Distribution
@@ -67,14 +64,12 @@ b_plot_est = pdf(b_uniform,x);
 b_plot_true = exp(-b_lambda_true * x);
 
 figure(3)
-plot(x, a_plot_est);
 hold on
-plot(x, a_plot_true);
-hold on
-plot(x, b_plot_est);
-hold on
-plot(x, b_plot_true);
-legend("Estimated a", "True a", "Estimated b", "True b");
+plot(x, a_plot_true, 'b', 'LineWidth',1.6);
+plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
+plot(x, b_plot_true, 'r', 'LineWidth',1.6);
+plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
+legend("True a", "Estimated a","True b", "Estimated b");
 title("Parametric Estimation - Uniform");
 
 % part 4 - Parzen Window
@@ -86,14 +81,12 @@ a_plot_est = parzen1d(a, x, 0.1, a_size(2));
 b_plot_est = parzen1d(b, x, 0.1, b_size(2));
 
 figure(4)
-plot(x, a_plot_est);
 hold on
-plot(x, a_plot_true);
-hold on
-plot(x, b_plot_est);
-hold on
-plot(x, b_plot_true);
-legend("Estimated a", "True a", "Estimated b", "True b");
+plot(x, a_plot_true, 'b', 'LineWidth',1.6);
+plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
+plot(x, b_plot_true, 'r', 'LineWidth',1.6);
+plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
+legend("True a", "Estimated a","True b", "Estimated b");
 title("Parzen Window with Standard Deviation of 0.1");
 
 % Gaussian Window with standard deviation of 0.4
@@ -101,14 +94,12 @@ a_plot_est = parzen1d(a, x, 0.4, a_size(2));
 b_plot_est = parzen1d(b, x, 0.4, b_size(2));
 
 figure(5)
-plot(x, a_plot_est);
 hold on
-plot(x, a_plot_true);
-hold on
-plot(x, b_plot_est);
-hold on
-plot(x, b_plot_true);
-legend("Estimated a", "True a", "Estimated b", "True b");
+plot(x, a_plot_true, 'b', 'LineWidth',1.6);
+plot(x, a_plot_est, 'Color',"#73A5C9",'LineWidth',1.6);
+plot(x, b_plot_true, 'r', 'LineWidth',1.6);
+plot(x, b_plot_est, 'Color',"#FFAA4A", 'LineWidth',1.6);
+legend("True a", "Estimated a","True b", "Estimated b");
 title("Parzen Window with Standard Deviation of 0.4");
 
 
